@@ -1,0 +1,11 @@
+#VSCode
+.vscode
+
+#CubeIDE
+Debug
+Startup 
+.settings
+.cproject
+.project
+*.launch
+*.ld
