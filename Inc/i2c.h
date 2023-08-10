@@ -95,7 +95,7 @@ static inline void I2C1_send_data(char maddr)
     // Send memory address
     WRITE_REG(I2C1->DR, maddr);
 
-    // Wait until DR is empty. Wait until transsmit data register is empty
+    // Wait until transmit is empty
     while (!READ_BIT(I2C1->SR1, I2C_SR1_TXE))
         ;
 }
@@ -112,6 +112,11 @@ static inline void I2C1_disable_ack()
     CLEAR_BIT(I2C1->CR1, I2C_CR1_ACK);
 }
 
+static inline char I2C1_get_data_dr()
+{
+    return I2C1->DR;
+}
+
 void I2C1_byte_read(char saddr, char maddr, char *data)
 {
     volatile int32_t temp;
@@ -123,18 +128,16 @@ void I2C1_byte_read(char saddr, char maddr, char *data)
     // Restart condition
     I2C1_start_condition();
 
-    // Transmit slave adress + read
     I2C1_send_addr_rw(saddr, READ);
 
     I2C1_disable_ack();
 
     // Clear ADDR flag
-    temp = I2C1_read_SR2(); 
+    temp = I2C1_read_SR2();
 
     I2C1_stop_condition();
 
-    // Read data from DR
-    *data = I2C1->DR;
+    *data = I2C1_get_data_dr();
     data++;
 }
 
@@ -144,54 +147,37 @@ void I2C1_burst_read(char saddr, char maddr, int n, char *data)
 
     I2C1_send_slave_addr(saddr);
 
-    // Wait until DR is empty. Wait until transsmit data register is empty
-    while (!READ_BIT(I2C1->SR1, I2C_SR1_TXE))
-        ;
+    I2C1_send_data(maddr);
 
-    // Send memory address
-    WRITE_REG(I2C1->DR, maddr);
-
-    // Wait until DR is empty. Wait until transsmit data register is empty
-    while (!READ_BIT(I2C1->SR1, I2C_SR1_TXE))
-        ;
-
+    // Restart condition
     I2C1_start_condition();
-    // Transmit slave adress + read
-    WRITE_REG(I2C1->DR, saddr << 1 | 1);
 
-    // Wait until addr flag is set
-    while (!READ_BIT(I2C1->SR1, I2C_SR1_ADDR))
-        ;
+    I2C1_send_addr_rw(saddr, READ);
 
     // Clear ADDR flag
     temp = I2C1_read_SR2();
 
-    // Enable ACK
-    SET_BIT(I2C1->CR1, I2C_CR1_ACK);
+    I2C1_enable_ack();
 
     while (n > 0U)
     {
-        // If one byte
         if (n == 1U)
         {
-            // Disable ACK
-            CLEAR_BIT(I2C1->CR1, I2C_CR1_ACK);
+            I2C1_disable_ack();
 
             I2C1_stop_condition();
 
-            // Read data from DR
-            *data++ = I2C1->DR;
+            *data = I2C1_get_data_dr();
+            data++;
 
             break;
         }
         else
         {
-
-            // Wait until RXNE flag is set
             while (!READ_BIT(I2C1->SR1, I2C_SR1_RXNE))
                 ;
-            // Read data from DR
-            *data = I2C1->DR;
+
+            *data = I2C1_get_data_dr();
             data++;
 
             n--;
