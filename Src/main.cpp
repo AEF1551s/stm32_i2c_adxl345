@@ -3,12 +3,10 @@
 #include <stm32f4xx.h>
 
 // User includes
+#include <stdint.h>
+#include <adxl345_i2c.h>
 #include <user_types.h>
 #include <user_functions.h>
-#include <delay.h>
-#include <timer.h>
-#include <stdint.h>
-#include <i2c.h>
 
 // DEBUG
 #include <debug_functons.h>
@@ -26,7 +24,7 @@ pin_struct_TypeDef sda_i2c_pb7;
 void clock_init()
 {
   // Enable AHB1 for GPIO
-  SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN);
+  SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN);
 
   // Enable APB2 for I2C1
   SET_BIT(RCC->APB1ENR, RCC_APB1ENR_I2C1EN);
@@ -52,14 +50,27 @@ void pin_init()
   /********************/
 }
 
+uint16_t x, y, z;
+// float xg, yg, zg;
+extern uint8_t data_rec[6];
+
 int main(void)
 {
   clock_init();
   pin_init();
   i2c1_init();
+  adxl_init();
 
   /* Loop forever */
   while (true)
   {
+    adxl_read_values(ADXL345_REG_DATAX0);
+    x = ((data_rec[1] << 8) | data_rec[0]);
+    y = ((data_rec[3] << 8) | data_rec[2]);
+    z = ((data_rec[5] << 8) | data_rec[4]);
+
+    // xg = x * ADXL345_GRAVITY_EARTH;
+    // yg = y * ADXL345_GRAVITY_EARTH;
+    // zg = z * ADXL345_GRAVITY_EARTH;
   }
 }
