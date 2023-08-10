@@ -3,19 +3,22 @@
 
 #include <adxl345_i2c.h>
 
-void adxl_init(){
-    //Read DEVICE_ID, should return 0xE5
+char data;
+uint8_t data_rec[6];
+
+void adxl_init()
+{
+    // Read DEVICE_ID, should return 0xE5
     adxl_read_adress(ADXL345_REG_DEVID);
 
-    //Set data format range to +-4g
+    // Set data format range to +-4g
     adxl_write(ADXL345_REG_DATA_FORMAT, ADXL345_RANGE_4G);
 
-    //Reset all bits
+    // Reset all bits
     adxl_write(ADXL345_REG_POWER_CTL, 0x00);
 
-    //Configure power control measurment bit
+    // Configure power control measurment bit
     adxl_write(ADXL345_REG_POWER_CTL, 0x08);
-
 }
 
 void adxl_read_adress(uint8_t reg)
@@ -33,7 +36,7 @@ void adxl_write(uint8_t reg, char value)
 
 void adxl_read_values(uint8_t reg)
 {
-I2C1_burst_read(ADXL345_ADDRESS, reg, 6, (char*)data_rec);
+    I2C1_burst_read(ADXL345_ADDRESS, reg, 6, (char *)data_rec);
 }
 
 #endif // ADXL345_I2C_CPP

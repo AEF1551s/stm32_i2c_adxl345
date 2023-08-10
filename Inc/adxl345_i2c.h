@@ -43,8 +43,8 @@
 // #define ADXL345_GRAVITY_MARS 3.69f
 // #define ADXL345_GRAVITY_NONE 1.00f
 
-char data;
-uint8_t data_rec[6];
+extern char data;
+extern uint8_t data_rec[6];
 
 typedef enum
 {
