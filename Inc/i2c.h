@@ -90,10 +90,10 @@ static inline int32_t I2C1_read_SR2()
     return I2C1->SR2;
 }
 
-static inline void I2C1_send_data(char maddr)
+static inline void I2C1_send_data(char data)
 {
-    // Send memory address
-    WRITE_REG(I2C1->DR, maddr);
+    // Send data
+    WRITE_REG(I2C1->DR, data);
 
     // Wait until transmit is empty
     while (!READ_BIT(I2C1->SR1, I2C_SR1_TXE))
@@ -184,4 +184,34 @@ void I2C1_burst_read(char saddr, char maddr, int n, char *data)
         }
     }
 }
+
+void I2C1_burst_write(char saddr, char maddr, int n, char *data)
+{
+    volatile int32_t temp;
+    I2C1_send_slave_addr(saddr);
+
+    // // Wait until transmit is empty
+    // while (!READ_BIT(I2C1->SR1, I2C_SR1_TXE))
+    //     ;
+
+    // // Send memory address
+    // WRITE_REG(I2C1->DR, maddr);
+
+    I2C1_send_data(maddr);
+
+    for (int i = 0; i < n; i++)
+    {
+        // // Wait until transmit is empty
+        // while (!READ_BIT(I2C1->SR1, I2C_SR1_TXE))
+        //     ;
+        I2C1_send_data(*data);
+        data++;
+    }
+
+    while (!READ_BIT(I2C1->SR1, I2C_SR1_BTF))
+        ;
+
+    I2C1_stop_condition();
+}
+
 #endif // I2C_H
