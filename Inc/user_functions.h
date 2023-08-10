@@ -5,8 +5,6 @@
 #include <stm32f4xx.h>
 
 #include <user_types.h>
-#include <delay.h>
-#include <adc.h>
 
 bool read_pin(pin_struct_TypeDef &pin, pin_state_TypeDef state_bit)
 {
@@ -37,8 +35,8 @@ pin_struct_TypeDef pin_setup(GPIO_TypeDef *GPIOx, pin_TypeDef pinx, pin_mode_Typ
         CLEAR_BIT(pin_struct.GPIOx->MODER, mode << mode_pin);
         break;
     case ANALOG:
-        // If pin is for analog
-        if (check_analog_pin(pin_struct))
+        // // If pin is for analog
+        // if (check_analog_pin(pin_struct))
         {
             SET_BIT(pin_struct.GPIOx->MODER, mode << mode_pin);
         }
@@ -93,37 +91,37 @@ void digital_write(pin_struct_TypeDef &pin, pin_state_TypeDef mode)
     WRITE_REG(pin.GPIOx->BSRR, reset_msk); // reset pin
 }
 
-void led_array_decrement(pin_struct_TypeDef LED_pins[9], int &starting_position, int &delay)
-{
-    int i = starting_position;
+// void led_array_decrement(pin_struct_TypeDef LED_pins[9], int &starting_position, int &delay)
+// {
+//     int i = starting_position;
 
-    digital_write(LED_pins[i], HIGH);
-    delay_ms(delay);
-    digital_write(LED_pins[i], LOW);
+//     digital_write(LED_pins[i], HIGH);
+//     delay_ms(delay);
+//     digital_write(LED_pins[i], LOW);
 
-    starting_position--;
+//     starting_position--;
 
-    if (starting_position == -1)
-    {
-        starting_position = 8;
-    }
-}
+//     if (starting_position == -1)
+//     {
+//         starting_position = 8;
+//     }
+// }
 
-void led_array_increment(pin_struct_TypeDef LED_pins[9], int &starting_position, int &delay)
-{
-    int i = starting_position;
+// void led_array_increment(pin_struct_TypeDef LED_pins[9], int &starting_position, int &delay)
+// {
+//     int i = starting_position;
 
-    digital_write(LED_pins[i], HIGH);
-    delay_ms(delay);
-    digital_write(LED_pins[i], LOW);
+//     digital_write(LED_pins[i], HIGH);
+//     delay_ms(delay);
+//     digital_write(LED_pins[i], LOW);
 
-    starting_position++;
+//     starting_position++;
 
-    if (starting_position == 9)
-    {
-        starting_position = 0;
-    }
-}
+//     if (starting_position == 9)
+//     {
+//         starting_position = 0;
+//     }
+// }
 
 uint32_t linear_distribution_12_bit(uint32_t input_value, uint32_t max_value)
 { // Takes 12bit input value and converts it linearly
