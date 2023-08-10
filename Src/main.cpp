@@ -74,3 +74,5 @@ int main(void)
     // zg = z * ADXL345_GRAVITY_EARTH;
   }
 }
+
+//TODO: Refactor headers with implementation files
