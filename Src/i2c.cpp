@@ -97,6 +97,7 @@ static inline void I2C1_disable_ack()
 
 void I2C1_byte_read(char saddr, char maddr, char *data)
 {
+    // TODO: Add timeout
     // Wait until not busy
     while (READ_BIT(I2C1->SR2, I2C_SR2_BUSY))
         ;
