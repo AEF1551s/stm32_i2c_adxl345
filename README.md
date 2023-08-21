@@ -1,4 +1,4 @@
-# STM32_i2c_xyz
+# STM32_i2c_adxl345
 
 This is simple excercise for STM32F410RBT6 microcontroller which is part of NUCLEO-F410RB development board.  
 The goal is to learn basic principles of I2C using accelerometer module ADXL345.  
