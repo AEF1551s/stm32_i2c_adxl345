@@ -27,5 +27,4 @@ Use CubeIDE to build and flash the NUCLEO development board.
 
 ## TODO: 
 Sometimes there is a problem, where I2C line stays busy. The crude fix is to reconnect the ADXL345 module before adxl_init() runs.  
-I believe it is fixable by adding a timout, and restarting the init function, possibly setting some software reset bit in adxl,  
-but i haven't gotten so far. 
+I believe it is fixable by adding a timout, and restarting the init function, possibly setting some software reset bit in adxl.
